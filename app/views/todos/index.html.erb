@@ -1,0 +1,64 @@
+<div class="mdl-grid" id="todo_list">
+</div>
+<script id="todo_list_template" type="text/x-jsrender">
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">{{:title}}</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        {{:description}}
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <i>Due on: </i>{{:due_date}}
+      </div>
+      <div class="mdl-card__menu">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect delete-button" data-id={{:id}}>
+          <i class="material-icons">delete</i>
+        </button>
+      </div>
+    </div>
+  </div>
+</script>
+
+<%= render 'new' %>
+<script>
+    $(document).on('click', ".delete-button", function(){
+      var todo_id = $(this).data().id;
+      var delete_todo = confirm("Delete?");
+      if(delete_todo){
+        $.ajax({
+          url: 'http://localhost:3000/api/todos/'+todo_id,
+          type: 'DELETE',
+          success: function(data){
+            render_todo_list();
+            snackbarContainer.MaterialSnackbar.showSnackbar({message: "Todo deleted!"});
+          },
+          error: function(data){
+            snackbarContainer.MaterialSnackbar.showSnackbar({message: data.responseJSON.error});
+          }
+        })
+      }
+    })
+
+  function render_todo_list(){
+    var tmpl = $.templates("#todo_list_template");
+    $.ajax({
+        url : 'http://localhost:3000/api/todos',
+        type: 'GET',
+        success : function(data){
+          var todos_list = data.todos
+          var html_data = tmpl.render(data.todos);
+          if(todos_list.length > 0){
+            $("#todo_list").html(html_data);
+          }
+          else {
+            $("#todo_list").html("<p class='no-data no-data-info'>No todos added yet!</p>");
+          }
+        },
+        error: function(data){
+          $("#todo_list").html("<p class='no-data no-data-error'>Unable to load data at the moment!</p>");
+        }
+    })
+  }
+</script>

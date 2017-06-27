@@ -1,0 +1,60 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require material
+ *= require_tree .
+ *= require_self
+ */
+
+main{
+  padding-top: 70px;
+}
+#todo_list .mdl-card{
+  width: auto;
+}
+#todo_list .mdl-card__supporting-text{
+  min-height: 80px;
+}
+
+.mdl-button--fab_fixed{
+  position: fixed;
+  top: 86%;
+  left: 82%;
+  z-index: 1000;
+}
+
+.mdl-dialog__title {
+    padding: 24px 3px 0;
+    margin: 0;
+    font-size: 20px;
+    border-bottom: 1px solid #cecece;
+  }
+  .mdl-dialog__content {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.no-data{
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+.no-data-error{
+  background-color: rgb(255, 95, 15);
+  color: #ffffff;
+}
+
+.no-data-info{
+  background-color: rgb(72, 166, 236);
+  color: #ffffff;
+}

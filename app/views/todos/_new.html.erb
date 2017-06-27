@@ -1,0 +1,73 @@
+<dialog class="mdl-dialog">
+  <h6 class="mdl-dialog__title">Add todo</h6>
+  <div class="mdl-dialog__content">
+    <form id="new_todo">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= text_field_tag :title, '', class: "mdl-textfield__input", required: true %>
+        <label class="mdl-textfield__label" for="title">Title</label>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= text_field_tag :description, '', class: "mdl-textfield__input" %>
+        <label class="mdl-textfield__label" for="description">Description</label>
+      </div>
+
+      <div class="mdl-textfield mdl-js-textfield">
+        <%= date_field_tag :due_date, '', class: "mdl-datepicker__input", style: "border: none; border-bottom: 1px solid #cecece; width: 100%; padding-bottom: 7px;", required: true %>
+        <!-- <label class="mdl-textfield__label" for="due_date">Due Date</label> -->
+      </div>
+
+    </form>
+  </div>
+  <div class="mdl-dialog__actions mdl-dialog__actions">
+    <button type="button" class="mdl-button" id="submit-todo">Save</button>
+    <button type="button" class="mdl-button close">Cancel</button>
+  </div>
+</dialog>
+
+<script>
+
+  var dialog = document.querySelector('dialog');
+  var showModalButton = document.querySelector('.show-modal');
+  if (! dialog.showModal) {
+    dialogPolyfill.registerDialog(dialog);
+  }
+  showModalButton.addEventListener('click', function() {
+    dialog.showModal();
+  });
+  dialog.querySelector('.close').addEventListener('click', function() {
+    dialog.close();
+  });
+  document.addEventListener("turbolinks:load", function() {
+    render_todo_list();
+  });
+
+  $(document).on('click', "#submit-todo", function(){
+    var o = {};
+    var a = $("#new_todo").serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    $.ajax({
+      url: "http://localhost:3000/api/todos",
+      method: "POST",
+      data: JSON.stringify(o),
+      contentType: "application/json; charset=utf-8",
+      dataType   : "json",
+      success    : function(){
+          dialog.close();
+          render_todo_list();
+          snackbarContainer.MaterialSnackbar.showSnackbar({message: "Todo added"});
+      },
+      error: function(data){
+        snackbarContainer.MaterialSnackbar.showSnackbar({message: data.responseJSON.error});
+      }
+    })
+  })
+</script>
