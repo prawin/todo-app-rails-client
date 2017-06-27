@@ -1,0 +1,61 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--12-col">
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" id="filter_toggle" style="float:right;">
+      <i class="material-icons">filter_list</i>
+    </button>
+
+  </div>
+</div>
+<div class="mdl-grid" id="filter" style="display:none;">
+  <div class="mdl-cell mdl-cell--12-col">
+  <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+
+    <div class="mdl-card__supporting-text">
+      <form id="filter_todo">
+        <div class="mdl-textfield mdl-js-textfield">
+          <label for="due_date">Due Date From</label>
+          <%= date_field_tag :from_due_date, '', class: "mdl-datepicker__input" %>
+
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <label for="due_date">Due Date To</label>
+          <%= date_field_tag :to_due_date, '', class: "mdl-datepicker__input" %>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+
+          <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="filter_submit">Filter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).on('click', "#filter_submit", function(){
+    var tmpl = $.templates("#todo_list_template");
+    $.ajax({
+        url : "<%=ENV['API_URL']%>/api/todos",
+        data: {from_due_date: $("#from_due_date").val(), to_due_date: $("#to_due_date").val()},
+        type: 'GET',
+        success : function(data){
+          var todos_list = data.todos
+          var html_data = tmpl.render(data.todos);
+          if(todos_list.length > 0){
+            $("#todo_list").html(html_data);
+          }
+          else {
+            $("#todo_list").html("<p class='no-data no-data-info'>No todos available!</p>");
+          }
+        },
+        error: function(data){
+          $("#todo_list").html("<p class='no-data no-data-error'>Unable to load data at the moment!</p>");
+        }
+    })
+  })
+
+  $(document).on('click', "#filter_toggle", function(){
+    $("#filter").slideToggle();
+  })
+</script>
