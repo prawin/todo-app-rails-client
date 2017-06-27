@@ -28,7 +28,7 @@
       var delete_todo = confirm("Delete?");
       if(delete_todo){
         $.ajax({
-          url: 'http://localhost:3000/api/todos/'+todo_id,
+          url: "<%=ENV['API_URL']%>/api/todos/"+todo_id,
           type: 'DELETE',
           success: function(data){
             render_todo_list();
@@ -44,7 +44,7 @@
   function render_todo_list(){
     var tmpl = $.templates("#todo_list_template");
     $.ajax({
-        url : 'http://localhost:3000/api/todos',
+        url : "<%=ENV['API_URL']%>/api/todos",
         type: 'GET',
         success : function(data){
           var todos_list = data.todos
